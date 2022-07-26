@@ -34,8 +34,7 @@
   
   <h3>🗂️Projects🗂️</h3>
   
-  #### [🥑Akbocado(악보카도)](https://github.com/CDGDG/Akbocado)
-  - 악보카도
+  #### [🥑Akbocado(악보카도)](https://github.com/CDGDG/Akbocado) 
   
   #### [🥭MANGO(망고)](https://github.com/CDGDG/MANGO)
   
