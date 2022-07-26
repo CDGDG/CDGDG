@@ -2,7 +2,7 @@
   
 ![header](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=250&section=header&text=CDGDG의%20깃-허브&fontColor=FFFFFF&fontSize=60)
 
-  <h3>Stack</h3>
+  <h2>🐢Stack🐢</h2>
   
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=Python&logoColor=white">
   <img src="https://img.shields.io/badge/Java-Orange?style=for-the-badge&logo=Java&logoColor=white">
@@ -30,6 +30,11 @@
   <img src="https://img.shields.io/badge/vscode-007ACC?style=for-the-badge&logo=Visual Studio Code&logoColor=white">
   <img src="https://img.shields.io/badge/jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white">
 
+  <hr>
+  
+  <h2>🦖Projects🦖</h2>
+  
+  
 ![Footer](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=200&section=footer)
   
 <div align=center>
