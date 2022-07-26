@@ -32,15 +32,12 @@
 
   <hr>
   
-  <h3>🦖Projects🦖</h3>
+  <h3>🗂️Projects🗂️</h3>
   
-  #### 🥑Akbocado(악보카도)
+  #### [🥑Akbocado(악보카도)](https://github.com/CDGDG/Akbocado)
+  - 악보카도
   
-  [Github 이동](https://github.com/CDGDG/Akbocado)
-  
-  #### 🥭MANGO(망고)
-  
-  [Github 이동](https://github.com/CDGDG/MANGO)
+  #### [🥭MANGO(망고)](https://github.com/CDGDG/MANGO)
   
   
 ![Footer](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=200&section=footer)
