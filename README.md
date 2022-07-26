@@ -33,11 +33,15 @@
   <hr>
   
   <h3>🗂️Projects🗂️</h3>
-  
-  #### [🥑Akbocado(악보카도)](https://github.com/CDGDG/Akbocado) 
-  
-  #### [🥭MANGO(망고)](https://github.com/CDGDG/MANGO)
-  
+  <br>
+  #### [🥑Akbocado(악보카도)](https://github.com/CDGDG/Akbocado) | 악보 정보 분석 OCR 사이트
+  *#OCR #Deep Learning #TensorFlow #OpenCV #Django*
+  <br><br>
+  #### [🥭MANGO(망고)](https://github.com/CDGDG/MANGO) | 음악 스트리밍, 검색, 추천 챗봇
+  *#Machine Learning #Deep Learning #TensorFlow #Django #Flask*
+  <br><br>
+  #### [📙[‘Our’, ‘Project’, ‘Diary’]](https://github.com/CDGDG/OPD_Project2) | 개발자들의 실력 향상을 위한 프로젝트 모집 및 기록 커뮤니티
+  *#Django #MySQL #Python #AJAX #Bootstrap #jQuery*
   
 ![Footer](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=200&section=footer)
   
