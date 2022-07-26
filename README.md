@@ -2,7 +2,7 @@
   
 ![header](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=250&section=header&text=CDGDG의%20깃-허브&fontColor=FFFFFF&fontSize=60)
 
-  <h2>🐢Stack🐢</h2>
+  <h3>🐢Stack🐢</h3>
   
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=Python&logoColor=white">
   <img src="https://img.shields.io/badge/Java-Orange?style=for-the-badge&logo=Java&logoColor=white">
@@ -32,7 +32,11 @@
 
   <hr>
   
-  <h2>🦖Projects🦖</h2>
+  <h3>🦖Projects🦖</h3>
+  
+  #### Akbocado(악보카도)
+  
+  <a href="https://github.com/CDGDG/Akbocado">이동하기</a>
   
   
 ![Footer](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=200&section=footer)
