@@ -34,9 +34,13 @@
   
   <h3>🦖Projects🦖</h3>
   
-  #### Akbocado(악보카도)
+  #### 🥑Akbocado(악보카도)
   
-  <a href="https://github.com/CDGDG/Akbocado" target="_blank">이동하기</a>
+  [Github 이동](https://github.com/CDGDG/Akbocado, "akbocado link")
+  
+  #### 🥭MANGO(망고)
+  
+  [Github 이동](https://github.com/CDGDG/MANGO, "akbocado link")
   
   
 ![Footer](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=200&section=footer)
