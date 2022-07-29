@@ -1,6 +1,6 @@
 <div align=center>
   
-![header](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=250&section=header&text=CDGDG의%20깃-허브&fontColor=FFFFFF&fontSize=60)
+![header](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=250&section=header&text=CDGDG's%20GITHUB&fontColor=FFFFFF&fontSize=60)
 
   <h3>🐢Stack🐢</h3>
   
