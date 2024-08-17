@@ -1,7 +1,23 @@
 <div align=center>
   
-![header](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=250&section=header&text=CDGDG's%20GITHUB&fontColor=FFFFFF&fontSize=60)
+  ![header](https://capsule-render.vercel.app/api?type=venom&height=300&color=gradient&text=CDGDG&textBg=false&fontColor=#FFFFFF&reversal=false&section=header&fontAlignY=50)
+  
+  <img src="https://storage.googleapis.com/cms-storage-bucket/6e19fee6b47b36ca613f.png" height=100>
+  <br>
+  <img src="https://bloclibrary.dev/_astro/light-bloc-logo.Cf4Oyfak.svg" height=100>
+  
+  <br>
 
+  <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=Dart&logoColor=white">
+  <img src="https://img.shields.io/badge/Android-34A853?style=for-the-badge&logo=Android&logoColor=white">
+  <img src="https://img.shields.io/badge/Ios-000000?style=for-the-badge&logo=Ios&logoColor=white">
+  <br>
+  <img src="https://img.shields.io/badge/vscode-007ACC?style=for-the-badge&logo=Visual Studio Code&logoColor=white">
+  <img src="https://img.shields.io/badge/androidstudio-3DDC84?style=for-the-badge&logo=Android Studio&logoColor=white">
+  <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white">
+  
+
+<!--   
   <h3>🐢Stack🐢</h3>
   
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=Python&logoColor=white">
@@ -28,7 +44,7 @@
   <img src="https://img.shields.io/badge/eclipse-2C2255?style=for-the-badge&logo=eclipse&logoColor=white">
   <img src="https://img.shields.io/badge/pycharm-000000?style=for-the-badge&logo=pycharm&logoColor=white">
   <img src="https://img.shields.io/badge/vscode-007ACC?style=for-the-badge&logo=Visual Studio Code&logoColor=white">
-  <img src="https://img.shields.io/badge/jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white">
+  <img src="https://img.shields.io/badge/jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white"> -->
 
   <hr>
   
@@ -43,7 +59,5 @@
   <br><br>
   #### [📙[‘Our’, ‘Project’, ‘Diary’]](https://github.com/CDGDG/OPD_Project2) | 개발자들의 실력 향상을 위한 프로젝트 모집 및 기록 커뮤니티
   *#Django #MySQL #Python #AJAX #Bootstrap #jQuery*
-  
-![Footer](https://capsule-render.vercel.app/api?type=waving&color=7DCE13&height=200&section=footer)
   
 <div align=center>
