@@ -1,12 +1,9 @@
 <div align=center>
   
-  ![header](https://capsule-render.vercel.app/api?type=venom&height=300&color=gradient&text=CDGDG&textBg=false&fontColor=#FFFFFF&reversal=false&section=header&fontAlignY=50)
-  
-  <img src="https://storage.googleapis.com/cms-storage-bucket/6e19fee6b47b36ca613f.png" height=100>
+  ![header](https://capsule-render.vercel.app/api?type=venom&height=300&color=gradient&text=CDGDG&textBg=false&fontColor=#FFFFFF&reversal=false&section=header&fontAlignY=50)  
+  <img src="https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png" height=150><h1>***Flutter***</h1>
   <br>
-  <img src="https://bloclibrary.dev/_astro/light-bloc-logo.Cf4Oyfak.svg" height=100>
-  
-  <br>
+  <img src="https://bloclibrary.dev/_astro/bloc.DJLDGT9c_Z19d52z.svg" height=100><h1>***Bloc***</h1>
 
   <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=Dart&logoColor=white">
   <img src="https://img.shields.io/badge/Android-34A853?style=for-the-badge&logo=Android&logoColor=white">
@@ -48,10 +45,22 @@
 
   <hr>
   
-  <h3>🗂️Projects🗂️</h3>
+  ### ***Projects***
+
+  #### <img height=50 src="https://play-lh.googleusercontent.com/VcDQTiN1953vY4HEMtO18-pMzrN6wPVr5LYs2vsUI7V_-dZYUy2_jexE4Mm0RpDKzjFq=w240-h480-rw"> ARTC Validator | ArtCoin Staking System
+  [<img height=30 src="https://storage.googleapis.com/pe-portal-consumer-prod-wagtail-static/images/visual-identity_logos_880x572-3.width-375.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wagtail%40pe-portal-consumer-prod.iam.gserviceaccount.com%2F20240817%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20240817T115220Z&X-Goog-Expires=86400&X-Goog-SignedHeaders=host&X-Goog-Signature=91154b344f914460daf9d808ac8641ec02d9b164a89ed93503aca9f10a88f1549b70c5109593b6d4dbb4962b1b27066427dea2d40b8d3d409536e0e85c35e22db176caf7abed7df4ae2f3dba8638f3faba4eba05492246ef820c5c8e1a79d1f98355544607658b0e3bccd2fc7330e838dc8b91e4944113a4ea12e660250c74d202c19d6ff936df7735a1edceef4962048d5736de1fa53c4f1ae0e672a46f750bc8969f5cdee6ecce8e19c5cb4f17dd361472e46fec363b5e00e4ac27149baeedf557a12eee3dc0114bb2f71087cad147d677832b6de49f3e6a88cb0468c60488923547fe16c713aa0bc6cedcd7af7bbb60cd396c03e292e7122035d9617fc40c"/>](https://play.google.com/store/apps/details?id=com.gnc_solution.art_validator)  
+  ***#Flutter #RestAPI*** *#DRF*
+  <br>
+  #### <img height=50 src="https://play-lh.googleusercontent.com/afIjh-Rx9_8UDr9fMI14NyhC1ANJyuuO0XK0_m-jey0cK1COU7d6ZPlBAQIf4opxOHnu=w240-h480-rw"> Build Performance | BuildPay 연동 채굴 앱
+  [<img height=30 src="https://storage.googleapis.com/pe-portal-consumer-prod-wagtail-static/images/visual-identity_logos_880x572-3.width-375.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wagtail%40pe-portal-consumer-prod.iam.gserviceaccount.com%2F20240817%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20240817T115220Z&X-Goog-Expires=86400&X-Goog-SignedHeaders=host&X-Goog-Signature=91154b344f914460daf9d808ac8641ec02d9b164a89ed93503aca9f10a88f1549b70c5109593b6d4dbb4962b1b27066427dea2d40b8d3d409536e0e85c35e22db176caf7abed7df4ae2f3dba8638f3faba4eba05492246ef820c5c8e1a79d1f98355544607658b0e3bccd2fc7330e838dc8b91e4944113a4ea12e660250c74d202c19d6ff936df7735a1edceef4962048d5736de1fa53c4f1ae0e672a46f750bc8969f5cdee6ecce8e19c5cb4f17dd361472e46fec363b5e00e4ac27149baeedf557a12eee3dc0114bb2f71087cad147d677832b6de49f3e6a88cb0468c60488923547fe16c713aa0bc6cedcd7af7bbb60cd396c03e292e7122035d9617fc40c"/>](https://play.google.com/store/apps/details?id=it.buildtec.build_mining)
+  [<img height=30 src="https://developer.apple.com/assets/elements/icons/app-store/app-store-256x256.png"/>](https://play.google.com/store/apps/details?id=it.buildtec.build_mining)  
+  ***#Flutter #GraphQL #Firebase***
+  <br>
+  #### <img height=50 src="https://play-lh.googleusercontent.com/NUaglF-hbRrv35WOpGL9goOROkfL6miNXNVoIYQil0jjq40jdH2a33YCjVNoMaFRVCk=w240-h480-rw"> [Sliding Puzzle](https://github.com/CDGDG/sliding_puzzle) | 랜덤 Puzzle 게임 앱
+  [<img height=30 src="https://storage.googleapis.com/pe-portal-consumer-prod-wagtail-static/images/visual-identity_logos_880x572-3.width-375.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wagtail%40pe-portal-consumer-prod.iam.gserviceaccount.com%2F20240817%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20240817T115220Z&X-Goog-Expires=86400&X-Goog-SignedHeaders=host&X-Goog-Signature=91154b344f914460daf9d808ac8641ec02d9b164a89ed93503aca9f10a88f1549b70c5109593b6d4dbb4962b1b27066427dea2d40b8d3d409536e0e85c35e22db176caf7abed7df4ae2f3dba8638f3faba4eba05492246ef820c5c8e1a79d1f98355544607658b0e3bccd2fc7330e838dc8b91e4944113a4ea12e660250c74d202c19d6ff936df7735a1edceef4962048d5736de1fa53c4f1ae0e672a46f750bc8969f5cdee6ecce8e19c5cb4f17dd361472e46fec363b5e00e4ac27149baeedf557a12eee3dc0114bb2f71087cad147d677832b6de49f3e6a88cb0468c60488923547fe16c713aa0bc6cedcd7af7bbb60cd396c03e292e7122035d9617fc40c"/>](https://play.google.com/store/apps/details?id=com.cdgdg.sliding_puzzle)  
+  ***#Flutter #Firebase***
   
-  
-  #### [🥑Akbocado(악보카도)](https://github.com/CDGDG/Akbocado) | 악보 정보 분석 OCR 사이트
+  <!-- #### [🥑Akbocado(악보카도)](https://github.com/CDGDG/Akbocado) | 악보 정보 분석 OCR 사이트
   *#OCR #Deep Learning #TensorFlow #OpenCV #Django*
   <br><br>
   #### [🥭MANGO(망고)](https://github.com/CDGDG/MANGO) | 음악 스트리밍, 검색, 추천 챗봇
@@ -59,5 +68,5 @@
   <br><br>
   #### [📙[‘Our’, ‘Project’, ‘Diary’]](https://github.com/CDGDG/OPD_Project2) | 개발자들의 실력 향상을 위한 프로젝트 모집 및 기록 커뮤니티
   *#Django #MySQL #Python #AJAX #Bootstrap #jQuery*
-  
+  -->
 <div align=center>
