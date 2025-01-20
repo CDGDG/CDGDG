@@ -47,7 +47,7 @@
   <hr>
 
   ### ***Code Sample***
-  [Flutter | Bloc | Riverpod]("https://github.com/CDGDG/cdgdg_flutter_code")
+  [Flutter | Bloc | Riverpod](https://github.com/CDGDG/cdgdg_flutter_code)
 
   <hr>
   
