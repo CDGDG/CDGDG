@@ -4,7 +4,7 @@
   
   <img src="https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png" height=150><h1>***Flutter***</h1>
   <br>
-  <img src="https://bloclibrary.dev/_astro/bloc.DJLDGT9c_Z19d52z.svg" height=100><h1>***Bloc***</h1>
+  <img src="https://bloclibrary.dev/_astro/bloc.DJLDGT9c_TyIw4.svg" height=100><h1>***Bloc***</h1>
 
   <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=Dart&logoColor=white">
   <img src="https://img.shields.io/badge/Android-34A853?style=for-the-badge&logo=Android&logoColor=white">
