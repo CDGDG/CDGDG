@@ -57,7 +57,7 @@ Codex와 Claude Code는 대체 도구라기보다 반복 작업을 줄이고 개
     <td valign="top">
       <b>Local usage snapshot</b><br />
       로컬 개발 환경에서 수집한 AI 에이전트 작업 기록입니다.<br />
-      공식 사용량 API가 아니라 개인 개발 환경의 작업 로그를 정리한 값입니다.
+      Codex와 Claude Code를 사용한 흐름을 일별 스냅샷으로 정리하고 있습니다.
     </td>
   </tr>
 </table>
