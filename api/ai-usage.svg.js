@@ -113,13 +113,24 @@ function newestGeneratedAt(usages) {
   return new Date(Math.max(...values)).toISOString().slice(0, 16).replace("T", " UTC ");
 }
 
+function telemetryBackground() {
+  try {
+    const imagePath = path.join(process.cwd(), "assets", "telemetry-neural-960.jpg");
+    return `data:image/jpeg;base64,${fs.readFileSync(imagePath).toString("base64")}`;
+  } catch {
+    return "";
+  }
+}
+
 function metricBlock(x, y, label, value, sublabel, accent) {
   return `
     <g transform="translate(${x} ${y})">
-      <rect width="250" height="104" rx="16" fill="#0f172a" stroke="${accent}" stroke-opacity="0.38"/>
-      <text x="22" y="32" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="13">${escapeXml(label)}</text>
-      <text x="22" y="70" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="800">${escapeXml(value)}</text>
-      <text x="22" y="91" fill="#cbd5e1" font-family="Inter, Arial, sans-serif" font-size="12">${escapeXml(sublabel)}</text>
+      <rect width="250" height="116" rx="22" fill="#ffffff" fill-opacity="0.74" stroke="${accent}" stroke-opacity="0.46"/>
+      <rect x="1" y="1" width="248" height="114" rx="21" fill="#f8fafc" fill-opacity="0.32"/>
+      <circle cx="222" cy="30" r="7" fill="${accent}" fill-opacity="0.88"/>
+      <text x="24" y="34" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700">${escapeXml(label)}</text>
+      <text x="24" y="78" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="850">${escapeXml(value)}</text>
+      <text x="24" y="101" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="650">${escapeXml(sublabel)}</text>
     </g>`;
 }
 
@@ -131,10 +142,10 @@ function contributionGrid(days) {
     const day = normalized[i] || {};
     const value = Number(day.total_tokens || 0);
     const level = value <= 0 ? 0 : Math.min(4, Math.ceil((value / maxTokens) * 4));
-    const colors = ["#1e293b", "#164e63", "#0e7490", "#14b8a6", "#a7f3d0"];
-    const x = 44 + (i % 28) * 30;
-    const y = 342 + Math.floor(i / 28) * 24;
-    cells.push(`<rect x="${x}" y="${y}" width="18" height="18" rx="4" fill="${colors[level]}"><title>${escapeXml(day.date || "")}: ${compact(value)} tokens</title></rect>`);
+    const colors = ["#e2e8f0", "#bae6fd", "#7dd3fc", "#38bdf8", "#0f766e"];
+    const x = 60 + (i % 28) * 30;
+    const y = 348 + Math.floor(i / 28) * 22;
+    cells.push(`<rect x="${x}" y="${y}" width="18" height="16" rx="5" fill="${colors[level]}" stroke="#ffffff" stroke-opacity="0.58"><title>${escapeXml(day.date || "")}: ${compact(value)} tokens</title></rect>`);
   }
   return cells.join("");
 }
@@ -146,31 +157,38 @@ function renderSvg(usages) {
   const combinedMonth = sumMetrics(metric(usages.codex, "codex", "month"), metric(usages.claude, "claude", "month"));
   const combinedAll = sumMetrics(metric(usages.codex, "codex", "all_time"), metric(usages.claude, "claude", "all_time"));
   const days = mergedDaily(usages);
-  const available = SOURCES.filter((source) => usages[source]?.[source]?.rolling_30d?.total_tokens).join(" + ") || "codex 기본 데이터";
+  const background = telemetryBackground();
 
-  return `<svg width="960" height="450" viewBox="0 0 960 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="로컬 AI 에이전트 사용량">
+  return `<svg width="960" height="450" viewBox="0 0 960 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI 에이전트 사용량">
     <defs>
-      <linearGradient id="bg" x1="0" y1="0" x2="960" y2="450" gradientUnits="userSpaceOnUse">
-        <stop stop-color="#020617"/>
-        <stop offset="0.52" stop-color="#111827"/>
-        <stop offset="1" stop-color="#172554"/>
+      <linearGradient id="wash" x1="0" y1="0" x2="960" y2="450" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#f8fafc" stop-opacity="0.92"/>
+        <stop offset="0.48" stop-color="#eff6ff" stop-opacity="0.76"/>
+        <stop offset="1" stop-color="#cffafe" stop-opacity="0.58"/>
       </linearGradient>
+      <filter id="shadow" x="-20%" y="-24%" width="140%" height="148%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#0f172a" flood-opacity="0.16"/>
+      </filter>
     </defs>
-    <rect width="960" height="450" rx="24" fill="url(#bg)"/>
-    <path d="M54 102C162 35 258 129 354 80C459 27 535 112 626 81C728 46 804 74 904 38" stroke="#38bdf8" stroke-width="2" opacity="0.42"/>
-    <path d="M58 414C176 340 287 407 391 349C522 276 623 387 737 315C805 272 848 281 906 253" stroke="#a7f3d0" stroke-width="2" opacity="0.38"/>
-    <text x="44" y="58" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="850">로컬 AI 에이전트 사용량</text>
-    <text x="44" y="86" fill="#cbd5e1" font-family="Inter, Arial, sans-serif" font-size="15">Codex + Claude Code 집계 · 갱신 ${escapeXml(newestGeneratedAt(usages))}</text>
+    <rect width="960" height="450" rx="30" fill="#f8fafc"/>
+    ${background ? `<image href="${background}" x="0" y="0" width="960" height="450" preserveAspectRatio="xMidYMid slice" opacity="0.9"/>` : ""}
+    <rect width="960" height="450" rx="30" fill="url(#wash)"/>
+    <rect x="1.5" y="1.5" width="957" height="447" rx="28.5" stroke="#67e8f9" stroke-opacity="0.46" stroke-width="3"/>
 
-    ${metricBlock(44, 124, "Codex 최근 30일 토큰", compact(codex30.total_tokens), `${codex30.sessions || 0}개 세션 · 출력 ${compact(codex30.output_tokens)}`, "#38bdf8")}
-    ${metricBlock(354, 124, "Claude 최근 30일 토큰", compact(claude30.total_tokens), `${claude30.sessions || 0}개 세션 · 출력 ${compact(claude30.output_tokens)}`, "#a78bfa")}
-    ${metricBlock(664, 124, "최근 30일 합산", compact(combined30.total_tokens), `${combined30.sessions || 0}개 세션 · 로컬 로그`, "#fde68a")}
+    <g filter="url(#shadow)">
+      <rect x="34" y="30" width="892" height="390" rx="28" fill="#ffffff" fill-opacity="0.48" stroke="#ffffff" stroke-opacity="0.72"/>
+    </g>
 
-    <text x="44" y="280" fill="#e2e8f0" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700">일별 활동</text>
-    <text x="44" y="304" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="13">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)} · 최근 84일</text>
+    <text x="60" y="74" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="880">AI 에이전트 사용량</text>
+    <text x="60" y="102" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="650">Codex + Claude Code · ${escapeXml(newestGeneratedAt(usages))}</text>
+
+    ${metricBlock(60, 134, "Codex 최근 30일", compact(codex30.total_tokens), `${codex30.sessions || 0}개 세션 · 출력 ${compact(codex30.output_tokens)}`, "#0284c7")}
+    ${metricBlock(355, 134, "Claude 최근 30일", compact(claude30.total_tokens), `${claude30.sessions || 0}개 세션 · 출력 ${compact(claude30.output_tokens)}`, "#7c3aed")}
+    ${metricBlock(650, 134, "최근 30일 합산", compact(combined30.total_tokens), `${combined30.sessions || 0}개 세션 · 로컬 로그`, "#0f766e")}
+
+    <text x="60" y="300" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">일별 활동</text>
+    <text x="60" y="323" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="650">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)} · 최근 84일</text>
     ${contributionGrid(days)}
-
-    <text x="44" y="430" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12">출처: ${escapeXml(available)}. 프롬프트, 파일 내용, 비밀값은 게시하지 않습니다.</text>
   </svg>`;
 }
 
