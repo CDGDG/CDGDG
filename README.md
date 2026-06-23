@@ -52,16 +52,6 @@ Codex와 Claude Code는 대체 도구라기보다 반복 작업을 줄이고 개
 
 ### AI Agent Activity
 
-<table>
-  <tr>
-    <td valign="top">
-      <b>Local usage snapshot</b><br />
-      로컬 개발 환경에서 수집한 AI 에이전트 작업 기록입니다.<br />
-      Codex와 Claude Code를 사용한 흐름을 일별 스냅샷으로 정리하고 있습니다.
-    </td>
-  </tr>
-</table>
-
 <p>
   <img
     src="https://cdgdg-ai-usage.vercel.app/api/ai-usage.svg"
@@ -80,9 +70,6 @@ Codex와 Claude Code는 대체 도구라기보다 반복 작업을 줄이고 개
 | **Workflow** | Obsidian, Fastlane, GitHub Pages |
 
 ### Projects
-
-지원서와 포트폴리오 근거 문서에 정리한 내용을 기준으로,
-현재 포지셔닝에 가장 잘 맞는 프로젝트만 다시 추렸습니다.
 
 | Project | What I built | Why it matters | Stack |
 | --- | --- | --- | --- |
