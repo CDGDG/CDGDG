@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-23T14:33:49.608428+09:00",
+  "generated_at": "2026-06-23T14:38:57.207589+09:00",
   "sources": [
     "~/.codex/sessions",
     "~/.codex/archived_sessions"
@@ -7,27 +7,27 @@
   "codex": {
     "month": {
       "sessions": 74,
-      "input_tokens": 1420840319,
-      "cached_input_tokens": 1322232704,
-      "output_tokens": 3809964,
-      "reasoning_output_tokens": 675725,
-      "total_tokens": 1424908683
+      "input_tokens": 1423111826,
+      "cached_input_tokens": 1324461440,
+      "output_tokens": 3814707,
+      "reasoning_output_tokens": 677112,
+      "total_tokens": 1427184933
     },
     "rolling_30d": {
       "sessions": 90,
-      "input_tokens": 1539807498,
-      "cached_input_tokens": 1434562432,
-      "output_tokens": 4052850,
-      "reasoning_output_tokens": 728736,
-      "total_tokens": 1544118748
+      "input_tokens": 1542079005,
+      "cached_input_tokens": 1436791168,
+      "output_tokens": 4057593,
+      "reasoning_output_tokens": 730123,
+      "total_tokens": 1546394998
     },
     "all_time": {
       "sessions": 228,
-      "input_tokens": 2281343116,
-      "cached_input_tokens": 2122371072,
-      "output_tokens": 6517470,
-      "reasoning_output_tokens": 1340107,
-      "total_tokens": 2288118986
+      "input_tokens": 2283614623,
+      "cached_input_tokens": 2124599808,
+      "output_tokens": 6522213,
+      "reasoning_output_tokens": 1341494,
+      "total_tokens": 2290395236
     },
     "daily": [
       {
@@ -780,11 +780,11 @@
       {
         "date": "2026-06-23",
         "sessions": 5,
-        "input_tokens": 221307262,
-        "cached_input_tokens": 206513536,
-        "output_tokens": 610722,
-        "reasoning_output_tokens": 123128,
-        "total_tokens": 221917984
+        "input_tokens": 223578769,
+        "cached_input_tokens": 208742272,
+        "output_tokens": 615465,
+        "reasoning_output_tokens": 124515,
+        "total_tokens": 224194234
       }
     ]
   }
