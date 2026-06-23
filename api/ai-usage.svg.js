@@ -137,14 +137,14 @@ function telemetryBackground() {
   }
 }
 
-function compactMetric(x, y, label, value, sublabel, accent) {
+function compactMetric(x, y, width, label, value, sublabel, accent) {
   return `
     <g transform="translate(${x} ${y})">
-      <rect width="190" height="76" rx="18" fill="#ffffff" fill-opacity="0.72"/>
-      <circle cx="166" cy="24" r="6" fill="${accent}" fill-opacity="0.9"/>
+      <rect width="${width}" height="78" rx="20" fill="#ffffff" fill-opacity="0.74"/>
+      <circle cx="${width - 28}" cy="25" r="7" fill="${accent}" fill-opacity="0.9"/>
       <text x="18" y="26" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="750">${escapeXml(label)}</text>
-      <text x="18" y="56" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="850">${escapeXml(value)}</text>
-      <text x="88" y="55" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="650">${escapeXml(sublabel)}</text>
+      <text x="18" y="60" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="850">${escapeXml(value)}</text>
+      <text x="148" y="58" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">${escapeXml(sublabel)}</text>
     </g>`;
 }
 
@@ -157,9 +157,9 @@ function contributionGrid(days) {
     const value = Number(day.total_tokens || 0);
     const level = value <= 0 ? 0 : Math.min(4, Math.ceil((value / maxTokens) * 4));
     const colors = ["#e2e8f0", "#bae6fd", "#7dd3fc", "#38bdf8", "#0f766e"];
-    const x = 704 + (i % 14) * 15;
-    const y = 365 + Math.floor(i / 14) * 14;
-    cells.push(`<rect x="${x}" y="${y}" width="13" height="13" rx="3" fill="${colors[level]}"><title>${escapeXml(day.date || "")}: ${compact(value)} tokens</title></rect>`);
+    const x = 60 + (i % 28) * 30;
+    const y = 474 + Math.floor(i / 28) * 24;
+    cells.push(`<rect x="${x}" y="${y}" width="18" height="18" rx="5" fill="${colors[level]}"><title>${escapeXml(day.date || "")}: ${compact(value)} tokens</title></rect>`);
   }
   return cells.join("");
 }
@@ -171,7 +171,7 @@ async function tokenChart(days) {
     import("d3-array"),
   ]);
   const data = dailySeries(days);
-  const chart = { x: 60, y: 142, width: 840, height: 150 };
+  const chart = { x: 60, y: 128, width: 840, height: 175 };
   const maxTotal = max(data, (day) => day.total_tokens) || 1;
   const xScale = scaleLinear().domain([0, Math.max(1, data.length - 1)]).range([chart.x, chart.x + chart.width]);
   const yScale = scaleLinear().domain([0, maxTotal]).nice().range([chart.y + chart.height, chart.y]);
@@ -223,9 +223,9 @@ async function renderSvg(usages) {
   const background = telemetryBackground();
   const chart = await tokenChart(days);
 
-  return `<svg width="960" height="450" viewBox="0 0 960 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI 에이전트 사용량">
+  return `<svg width="960" height="560" viewBox="0 0 960 560" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI 에이전트 사용량">
     <defs>
-      <linearGradient id="wash" x1="0" y1="0" x2="960" y2="450" gradientUnits="userSpaceOnUse">
+      <linearGradient id="wash" x1="0" y1="0" x2="960" y2="560" gradientUnits="userSpaceOnUse">
         <stop stop-color="#f8fafc" stop-opacity="0.92"/>
         <stop offset="0.48" stop-color="#eff6ff" stop-opacity="0.76"/>
         <stop offset="1" stop-color="#cffafe" stop-opacity="0.58"/>
@@ -234,13 +234,13 @@ async function renderSvg(usages) {
         <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#0f172a" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="960" height="450" rx="30" fill="#f8fafc"/>
-    ${background ? `<image href="${background}" x="0" y="0" width="960" height="450" preserveAspectRatio="xMidYMid slice" opacity="0.9"/>` : ""}
-    <rect width="960" height="450" rx="30" fill="url(#wash)"/>
-    <rect x="1.5" y="1.5" width="957" height="447" rx="28.5" stroke="#67e8f9" stroke-opacity="0.46" stroke-width="3"/>
+    <rect width="960" height="560" rx="30" fill="#f8fafc"/>
+    ${background ? `<image href="${background}" x="0" y="0" width="960" height="560" preserveAspectRatio="xMidYMid slice" opacity="0.9"/>` : ""}
+    <rect width="960" height="560" rx="30" fill="url(#wash)"/>
+    <rect x="1.5" y="1.5" width="957" height="557" rx="28.5" stroke="#67e8f9" stroke-opacity="0.46" stroke-width="3"/>
 
     <g filter="url(#shadow)">
-      <rect x="34" y="30" width="892" height="390" rx="28" fill="#ffffff" fill-opacity="0.48" stroke="#ffffff" stroke-opacity="0.72"/>
+      <rect x="34" y="30" width="892" height="510" rx="28" fill="#ffffff" fill-opacity="0.48" stroke="#ffffff" stroke-opacity="0.72"/>
     </g>
 
     <text x="60" y="74" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="880">AI 에이전트 사용량</text>
@@ -248,12 +248,12 @@ async function renderSvg(usages) {
 
     ${chart}
 
-    ${compactMetric(60, 318, "Codex", compact(codex30.total_tokens), `${codex30.sessions || 0}개 세션`, "#0284c7")}
-    ${compactMetric(270, 318, "Claude", compact(claude30.total_tokens), `${claude30.sessions || 0}개 세션`, "#7c3aed")}
-    ${compactMetric(480, 318, "최근 30일", compact(combined30.total_tokens), `${combined30.sessions || 0}개 세션`, "#0f766e")}
+    ${compactMetric(60, 345, 260, "Codex", compact(codex30.total_tokens), `${codex30.sessions || 0}개 세션`, "#0284c7")}
+    ${compactMetric(350, 345, 260, "Claude", compact(claude30.total_tokens), `${claude30.sessions || 0}개 세션`, "#7c3aed")}
+    ${compactMetric(640, 345, 260, "최근 30일", compact(combined30.total_tokens), `${combined30.sessions || 0}개 세션`, "#0f766e")}
 
-    <text x="704" y="331" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="850">최근 84일</text>
-    <text x="704" y="353" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="650">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)}</text>
+    <text x="60" y="455" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="850">최근 84일</text>
+    <text x="170" y="455" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)}</text>
     ${contributionGrid(days)}
   </svg>`;
 }
