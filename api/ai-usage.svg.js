@@ -157,9 +157,9 @@ function contributionGrid(days) {
     const value = Number(day.total_tokens || 0);
     const level = value <= 0 ? 0 : Math.min(4, Math.ceil((value / maxTokens) * 4));
     const colors = ["#e2e8f0", "#bae6fd", "#7dd3fc", "#38bdf8", "#0f766e"];
-    const x = 704 + (i % 21) * 9;
-    const y = 374 + Math.floor(i / 21) * 12;
-    cells.push(`<rect x="${x}" y="${y}" width="8" height="8" rx="2" fill="${colors[level]}"><title>${escapeXml(day.date || "")}: ${compact(value)} tokens</title></rect>`);
+    const x = 704 + (i % 14) * 15;
+    const y = 365 + Math.floor(i / 14) * 14;
+    cells.push(`<rect x="${x}" y="${y}" width="13" height="13" rx="3" fill="${colors[level]}"><title>${escapeXml(day.date || "")}: ${compact(value)} tokens</title></rect>`);
   }
   return cells.join("");
 }
@@ -252,8 +252,8 @@ async function renderSvg(usages) {
     ${compactMetric(270, 318, "Claude", compact(claude30.total_tokens), `${claude30.sessions || 0}개 세션`, "#7c3aed")}
     ${compactMetric(480, 318, "최근 30일", compact(combined30.total_tokens), `${combined30.sessions || 0}개 세션`, "#0f766e")}
 
-    <text x="704" y="335" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="800">최근 84일</text>
-    <text x="704" y="356" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="650">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)}</text>
+    <text x="704" y="331" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="850">최근 84일</text>
+    <text x="704" y="353" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="650">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)}</text>
     ${contributionGrid(days)}
   </svg>`;
 }
