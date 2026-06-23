@@ -19,6 +19,9 @@
   },
   "homepage": "https://github.com/CDGDG/CDGDG#readme",
   "dependencies": {
-    "@vercel/blob": "^2.4.1"
+    "@vercel/blob": "^2.4.1",
+    "d3-array": "^3.2.4",
+    "d3-scale": "^4.0.2",
+    "d3-shape": "^3.2.0"
   }
 }

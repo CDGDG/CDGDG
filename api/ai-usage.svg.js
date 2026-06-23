@@ -113,6 +113,21 @@ function newestGeneratedAt(usages) {
   return new Date(Math.max(...values)).toISOString().slice(0, 16).replace("T", " UTC ");
 }
 
+function dailySeries(days) {
+  const normalized = [...(days || [])].slice(-84);
+  if (!normalized.length) {
+    return [{ index: 0, total_tokens: 0, input_tokens: 0, output_tokens: 0, sessions: 0 }];
+  }
+  return normalized.map((day, index) => ({
+    index,
+    date: day.date || "",
+    total_tokens: Number(day.total_tokens || 0),
+    input_tokens: Number(day.input_tokens || 0),
+    output_tokens: Number(day.output_tokens || 0),
+    sessions: Number(day.sessions || 0),
+  }));
+}
+
 function telemetryBackground() {
   try {
     const imagePath = path.join(process.cwd(), "assets", "telemetry-neural-960.jpg");
@@ -122,15 +137,14 @@ function telemetryBackground() {
   }
 }
 
-function metricBlock(x, y, label, value, sublabel, accent) {
+function compactMetric(x, y, label, value, sublabel, accent) {
   return `
     <g transform="translate(${x} ${y})">
-      <rect width="250" height="116" rx="22" fill="#ffffff" fill-opacity="0.74" stroke="${accent}" stroke-opacity="0.46"/>
-      <rect x="1" y="1" width="248" height="114" rx="21" fill="#f8fafc" fill-opacity="0.32"/>
-      <circle cx="222" cy="30" r="7" fill="${accent}" fill-opacity="0.88"/>
-      <text x="24" y="34" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700">${escapeXml(label)}</text>
-      <text x="24" y="78" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="850">${escapeXml(value)}</text>
-      <text x="24" y="101" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="650">${escapeXml(sublabel)}</text>
+      <rect width="190" height="76" rx="18" fill="#ffffff" fill-opacity="0.72"/>
+      <circle cx="166" cy="24" r="6" fill="${accent}" fill-opacity="0.9"/>
+      <text x="18" y="26" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="750">${escapeXml(label)}</text>
+      <text x="18" y="56" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="850">${escapeXml(value)}</text>
+      <text x="88" y="55" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="650">${escapeXml(sublabel)}</text>
     </g>`;
 }
 
@@ -143,14 +157,63 @@ function contributionGrid(days) {
     const value = Number(day.total_tokens || 0);
     const level = value <= 0 ? 0 : Math.min(4, Math.ceil((value / maxTokens) * 4));
     const colors = ["#e2e8f0", "#bae6fd", "#7dd3fc", "#38bdf8", "#0f766e"];
-    const x = 60 + (i % 28) * 30;
-    const y = 348 + Math.floor(i / 28) * 22;
-    cells.push(`<rect x="${x}" y="${y}" width="18" height="16" rx="5" fill="${colors[level]}" stroke="#ffffff" stroke-opacity="0.58"><title>${escapeXml(day.date || "")}: ${compact(value)} tokens</title></rect>`);
+    const x = 704 + (i % 21) * 9;
+    const y = 374 + Math.floor(i / 21) * 12;
+    cells.push(`<rect x="${x}" y="${y}" width="8" height="8" rx="2" fill="${colors[level]}"><title>${escapeXml(day.date || "")}: ${compact(value)} tokens</title></rect>`);
   }
   return cells.join("");
 }
 
-function renderSvg(usages) {
+async function tokenChart(days) {
+  const [{ scaleLinear }, { area, line, curveMonotoneX }, { max }] = await Promise.all([
+    import("d3-scale"),
+    import("d3-shape"),
+    import("d3-array"),
+  ]);
+  const data = dailySeries(days);
+  const chart = { x: 60, y: 142, width: 840, height: 150 };
+  const maxTotal = max(data, (day) => day.total_tokens) || 1;
+  const xScale = scaleLinear().domain([0, Math.max(1, data.length - 1)]).range([chart.x, chart.x + chart.width]);
+  const yScale = scaleLinear().domain([0, maxTotal]).nice().range([chart.y + chart.height, chart.y]);
+  const areaPath = area()
+    .x((day) => xScale(day.index))
+    .y0(chart.y + chart.height)
+    .y1((day) => yScale(day.total_tokens))
+    .curve(curveMonotoneX)(data);
+  const linePath = line()
+    .x((day) => xScale(day.index))
+    .y((day) => yScale(day.total_tokens))
+    .curve(curveMonotoneX)(data);
+  const outputPath = line()
+    .x((day) => xScale(day.index))
+    .y((day) => yScale(day.output_tokens))
+    .curve(curveMonotoneX)(data);
+  const ticks = yScale.ticks(3).filter((value) => value > 0);
+  const grid = ticks.map((value) => `
+    <g>
+      <line x1="${chart.x}" y1="${yScale(value).toFixed(2)}" x2="${chart.x + chart.width}" y2="${yScale(value).toFixed(2)}" stroke="#cbd5e1" stroke-opacity="0.52"/>
+      <text x="${chart.x + chart.width + 10}" y="${(yScale(value) + 4).toFixed(2)}" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="650">${compact(value)}</text>
+    </g>`).join("");
+  const last = data[data.length - 1] || data[0];
+  const lastX = xScale(last.index);
+  const lastY = yScale(last.total_tokens);
+
+  return `
+    <g>
+      <rect x="${chart.x}" y="${chart.y}" width="${chart.width}" height="${chart.height}" rx="20" fill="#ffffff" fill-opacity="0.56"/>
+      ${grid}
+      <path d="${areaPath || ""}" fill="#38bdf8" fill-opacity="0.28"/>
+      <path d="${linePath || ""}" fill="none" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
+      <path d="${outputPath || ""}" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.72"/>
+      <circle cx="${lastX.toFixed(2)}" cy="${lastY.toFixed(2)}" r="6" fill="#0f766e" stroke="#ffffff" stroke-width="3"/>
+      <text x="${chart.x}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">총 토큰</text>
+      <circle cx="${chart.x + 58}" cy="${chart.y + chart.height + 20}" r="4" fill="#0284c7"/>
+      <text x="${chart.x + 86}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">출력 토큰</text>
+      <circle cx="${chart.x + 154}" cy="${chart.y + chart.height + 20}" r="4" fill="#7c3aed"/>
+    </g>`;
+}
+
+async function renderSvg(usages) {
   const codex30 = metric(usages.codex, "codex", "rolling_30d");
   const claude30 = metric(usages.claude, "claude", "rolling_30d");
   const combined30 = sumMetrics(codex30, claude30);
@@ -158,6 +221,7 @@ function renderSvg(usages) {
   const combinedAll = sumMetrics(metric(usages.codex, "codex", "all_time"), metric(usages.claude, "claude", "all_time"));
   const days = mergedDaily(usages);
   const background = telemetryBackground();
+  const chart = await tokenChart(days);
 
   return `<svg width="960" height="450" viewBox="0 0 960 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI 에이전트 사용량">
     <defs>
@@ -182,12 +246,14 @@ function renderSvg(usages) {
     <text x="60" y="74" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="880">AI 에이전트 사용량</text>
     <text x="60" y="102" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="650">Codex + Claude Code · ${escapeXml(newestGeneratedAt(usages))}</text>
 
-    ${metricBlock(60, 134, "Codex 최근 30일", compact(codex30.total_tokens), `${codex30.sessions || 0}개 세션 · 출력 ${compact(codex30.output_tokens)}`, "#0284c7")}
-    ${metricBlock(355, 134, "Claude 최근 30일", compact(claude30.total_tokens), `${claude30.sessions || 0}개 세션 · 출력 ${compact(claude30.output_tokens)}`, "#7c3aed")}
-    ${metricBlock(650, 134, "최근 30일 합산", compact(combined30.total_tokens), `${combined30.sessions || 0}개 세션 · 로컬 로그`, "#0f766e")}
+    ${chart}
 
-    <text x="60" y="300" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">일별 활동</text>
-    <text x="60" y="323" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="650">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)} · 최근 84일</text>
+    ${compactMetric(60, 318, "Codex", compact(codex30.total_tokens), `${codex30.sessions || 0}개 세션`, "#0284c7")}
+    ${compactMetric(270, 318, "Claude", compact(claude30.total_tokens), `${claude30.sessions || 0}개 세션`, "#7c3aed")}
+    ${compactMetric(480, 318, "최근 30일", compact(combined30.total_tokens), `${combined30.sessions || 0}개 세션`, "#0f766e")}
+
+    <text x="704" y="335" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="800">최근 84일</text>
+    <text x="704" y="356" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="650">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)}</text>
     ${contributionGrid(days)}
   </svg>`;
 }
@@ -195,5 +261,5 @@ function renderSvg(usages) {
 module.exports = async function handler(req, res) {
   res.setHeader("Content-Type", "image/svg+xml; charset=utf-8");
   res.setHeader("Cache-Control", "s-maxage=900, stale-while-revalidate=3600");
-  res.status(200).send(renderSvg(await loadUsages()));
+  res.status(200).send(await renderSvg(await loadUsages()));
 };
