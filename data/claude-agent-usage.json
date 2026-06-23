@@ -1,32 +1,32 @@
 {
-  "generated_at": "2026-06-23T15:02:41.998114+09:00",
+  "generated_at": "2026-06-23T15:35:38.165006+09:00",
   "sources": [
     "~/.claude/projects"
   ],
   "claude": {
     "month": {
       "sessions": 165,
-      "input_tokens": 3218720397,
-      "cached_input_tokens": 3125963031,
-      "output_tokens": 7486638,
+      "input_tokens": 3220307239,
+      "cached_input_tokens": 3127528362,
+      "output_tokens": 7509235,
       "reasoning_output_tokens": 0,
-      "total_tokens": 3226207035
+      "total_tokens": 3227816474
     },
     "rolling_30d": {
       "sessions": 165,
-      "input_tokens": 3218720397,
-      "cached_input_tokens": 3125963031,
-      "output_tokens": 7486638,
+      "input_tokens": 3220307239,
+      "cached_input_tokens": 3127528362,
+      "output_tokens": 7509235,
       "reasoning_output_tokens": 0,
-      "total_tokens": 3226207035
+      "total_tokens": 3227816474
     },
     "all_time": {
       "sessions": 174,
-      "input_tokens": 3589125458,
-      "cached_input_tokens": 3489232482,
-      "output_tokens": 9005786,
+      "input_tokens": 3590712300,
+      "cached_input_tokens": 3490797813,
+      "output_tokens": 9028383,
       "reasoning_output_tokens": 0,
-      "total_tokens": 3598131244
+      "total_tokens": 3599740683
     },
     "daily": [
       {
@@ -779,11 +779,11 @@
       {
         "date": "2026-06-23",
         "sessions": 8,
-        "input_tokens": 293274831,
-        "cached_input_tokens": 282716554,
-        "output_tokens": 1041808,
+        "input_tokens": 294861673,
+        "cached_input_tokens": 284281885,
+        "output_tokens": 1064405,
         "reasoning_output_tokens": 0,
-        "total_tokens": 294316639
+        "total_tokens": 295926078
       }
     ]
   }
