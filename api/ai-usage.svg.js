@@ -175,7 +175,7 @@ function contributionGrid(days) {
 }
 
 async function tokenChart(days) {
-  const [{ scaleLinear }, { area, line, curveMonotoneX }, { max }] = await Promise.all([
+  const [{ scaleLinear }, { area, line, curveLinear }, { max }] = await Promise.all([
     import("d3-scale"),
     import("d3-shape"),
     import("d3-array"),
@@ -185,23 +185,28 @@ async function tokenChart(days) {
   const maxTotal = max(data, (day) => day.total_tokens) || 1;
   const xScale = scaleLinear().domain([0, Math.max(1, data.length - 1)]).range([chart.x, chart.x + chart.width]);
   const yScale = scaleLinear().domain([0, maxTotal]).nice().range([chart.y + chart.height, chart.y]);
-  const areaPath = area()
+  const codexAreaPath = area()
     .x((day) => xScale(day.index))
     .y0(chart.y + chart.height)
+    .y1((day) => yScale(day.codex_total_tokens))
+    .curve(curveLinear)(data);
+  const claudeStackAreaPath = area()
+    .x((day) => xScale(day.index))
+    .y0((day) => yScale(day.codex_total_tokens))
     .y1((day) => yScale(day.total_tokens))
-    .curve(curveMonotoneX)(data);
-  const linePath = line()
+    .curve(curveLinear)(data);
+  const totalPath = line()
     .x((day) => xScale(day.index))
     .y((day) => yScale(day.total_tokens))
-    .curve(curveMonotoneX)(data);
+    .curve(curveLinear)(data);
   const codexPath = line()
     .x((day) => xScale(day.index))
     .y((day) => yScale(day.codex_total_tokens))
-    .curve(curveMonotoneX)(data);
+    .curve(curveLinear)(data);
   const claudePath = line()
     .x((day) => xScale(day.index))
     .y((day) => yScale(day.claude_total_tokens))
-    .curve(curveMonotoneX)(data);
+    .curve(curveLinear)(data);
   const ticks = yScale.ticks(3).filter((value) => value > 0);
   const grid = ticks.map((value) => `
     <g>
@@ -216,17 +221,18 @@ async function tokenChart(days) {
     <g>
       <rect x="${chart.x}" y="${chart.y}" width="${chart.width}" height="${chart.height}" rx="20" fill="#ffffff" fill-opacity="0.56"/>
       ${grid}
-      <path d="${areaPath || ""}" fill="#38bdf8" fill-opacity="0.28"/>
-      <path d="${linePath || ""}" fill="none" stroke="#0f766e" stroke-width="4" stroke-linecap="round"/>
-      <path d="${codexPath || ""}" fill="none" stroke="#0284c7" stroke-width="3" stroke-linecap="round" stroke-opacity="0.78"/>
-      <path d="${claudePath || ""}" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-opacity="0.82"/>
+      <path d="${codexAreaPath || ""}" fill="#38bdf8" fill-opacity="0.22"/>
+      <path d="${claudeStackAreaPath || ""}" fill="#8b5cf6" fill-opacity="0.22"/>
+      <path d="${totalPath || ""}" fill="none" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.9"/>
+      <path d="${codexPath || ""}" fill="none" stroke="#0284c7" stroke-width="2.6" stroke-linecap="round" stroke-opacity="0.82"/>
+      <path d="${claudePath || ""}" fill="none" stroke="#7c3aed" stroke-width="2.6" stroke-linecap="round" stroke-opacity="0.86"/>
       <circle cx="${lastX.toFixed(2)}" cy="${lastY.toFixed(2)}" r="6" fill="#0f766e" stroke="#ffffff" stroke-width="3"/>
-      <text x="${chart.x}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">전체</text>
-      <circle cx="${chart.x + 38}" cy="${chart.y + chart.height + 20}" r="4" fill="#0f766e"/>
-      <text x="${chart.x + 66}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">Codex</text>
-      <circle cx="${chart.x + 112}" cy="${chart.y + chart.height + 20}" r="4" fill="#0284c7"/>
-      <text x="${chart.x + 140}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">Claude</text>
-      <circle cx="${chart.x + 190}" cy="${chart.y + chart.height + 20}" r="4" fill="#7c3aed"/>
+      <text x="${chart.x}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">전체 합산</text>
+      <circle cx="${chart.x + 66}" cy="${chart.y + chart.height + 20}" r="4" fill="#0f766e"/>
+      <text x="${chart.x + 94}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">Codex</text>
+      <circle cx="${chart.x + 140}" cy="${chart.y + chart.height + 20}" r="4" fill="#0284c7"/>
+      <text x="${chart.x + 168}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">Claude</text>
+      <circle cx="${chart.x + 218}" cy="${chart.y + chart.height + 20}" r="4" fill="#7c3aed"/>
     </g>`;
 }
 
