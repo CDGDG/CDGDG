@@ -48,13 +48,20 @@ async function loadBlobUsage(source) {
 }
 
 function loadBundledUsage(source) {
-  const usagePath = path.join(process.cwd(), "data", "agent-usage.json");
-  try {
-    const data = JSON.parse(fs.readFileSync(usagePath, "utf8"));
-    return data[source] ? data : null;
-  } catch {
-    return null;
+  const candidates = source === "codex"
+    ? ["agent-usage.json", "codex-agent-usage.json"]
+    : [`${source}-agent-usage.json`, "agent-usage.json"];
+
+  for (const fileName of candidates) {
+    const usagePath = path.join(process.cwd(), "data", fileName);
+    try {
+      const data = JSON.parse(fs.readFileSync(usagePath, "utf8"));
+      if (data[source]) return data;
+    } catch {
+      // Keep looking for another bundled source file.
+    }
   }
+  return null;
 }
 
 async function loadUsages() {
@@ -66,7 +73,7 @@ async function loadUsages() {
     entries.codex = loadBundledUsage("codex") || emptyUsage("codex");
   }
   if (!entries.claude) {
-    entries.claude = emptyUsage("claude");
+    entries.claude = loadBundledUsage("claude") || emptyUsage("claude");
   }
   return entries;
 }
@@ -95,6 +102,7 @@ function mergedDaily(usages) {
       for (const [key, value] of Object.entries(day)) {
         if (key !== "date" && typeof value === "number") {
           current[key] = (current[key] || 0) + value;
+          current[`${source}_${key}`] = (current[`${source}_${key}`] || 0) + value;
         }
       }
       byDate.set(date, current);
@@ -122,6 +130,8 @@ function dailySeries(days) {
     index,
     date: day.date || "",
     total_tokens: Number(day.total_tokens || 0),
+    codex_total_tokens: Number(day.codex_total_tokens || 0),
+    claude_total_tokens: Number(day.claude_total_tokens || 0),
     input_tokens: Number(day.input_tokens || 0),
     output_tokens: Number(day.output_tokens || 0),
     sessions: Number(day.sessions || 0),
@@ -184,9 +194,13 @@ async function tokenChart(days) {
     .x((day) => xScale(day.index))
     .y((day) => yScale(day.total_tokens))
     .curve(curveMonotoneX)(data);
-  const outputPath = line()
+  const codexPath = line()
     .x((day) => xScale(day.index))
-    .y((day) => yScale(day.output_tokens))
+    .y((day) => yScale(day.codex_total_tokens))
+    .curve(curveMonotoneX)(data);
+  const claudePath = line()
+    .x((day) => xScale(day.index))
+    .y((day) => yScale(day.claude_total_tokens))
     .curve(curveMonotoneX)(data);
   const ticks = yScale.ticks(3).filter((value) => value > 0);
   const grid = ticks.map((value) => `
@@ -203,13 +217,16 @@ async function tokenChart(days) {
       <rect x="${chart.x}" y="${chart.y}" width="${chart.width}" height="${chart.height}" rx="20" fill="#ffffff" fill-opacity="0.56"/>
       ${grid}
       <path d="${areaPath || ""}" fill="#38bdf8" fill-opacity="0.28"/>
-      <path d="${linePath || ""}" fill="none" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
-      <path d="${outputPath || ""}" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.72"/>
+      <path d="${linePath || ""}" fill="none" stroke="#0f766e" stroke-width="4" stroke-linecap="round"/>
+      <path d="${codexPath || ""}" fill="none" stroke="#0284c7" stroke-width="3" stroke-linecap="round" stroke-opacity="0.78"/>
+      <path d="${claudePath || ""}" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-opacity="0.82"/>
       <circle cx="${lastX.toFixed(2)}" cy="${lastY.toFixed(2)}" r="6" fill="#0f766e" stroke="#ffffff" stroke-width="3"/>
-      <text x="${chart.x}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">총 토큰</text>
-      <circle cx="${chart.x + 58}" cy="${chart.y + chart.height + 20}" r="4" fill="#0284c7"/>
-      <text x="${chart.x + 86}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">출력 토큰</text>
-      <circle cx="${chart.x + 154}" cy="${chart.y + chart.height + 20}" r="4" fill="#7c3aed"/>
+      <text x="${chart.x}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">전체</text>
+      <circle cx="${chart.x + 38}" cy="${chart.y + chart.height + 20}" r="4" fill="#0f766e"/>
+      <text x="${chart.x + 66}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">Codex</text>
+      <circle cx="${chart.x + 112}" cy="${chart.y + chart.height + 20}" r="4" fill="#0284c7"/>
+      <text x="${chart.x + 140}" y="${chart.y + chart.height + 24}" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">Claude</text>
+      <circle cx="${chart.x + 190}" cy="${chart.y + chart.height + 20}" r="4" fill="#7c3aed"/>
     </g>`;
 }
 
