@@ -146,9 +146,9 @@ function renderSvg(usages) {
   const combinedMonth = sumMetrics(metric(usages.codex, "codex", "month"), metric(usages.claude, "claude", "month"));
   const combinedAll = sumMetrics(metric(usages.codex, "codex", "all_time"), metric(usages.claude, "claude", "all_time"));
   const days = mergedDaily(usages);
-  const available = SOURCES.filter((source) => usages[source]?.[source]?.rolling_30d?.total_tokens).join(" + ") || "codex bundled fallback";
+  const available = SOURCES.filter((source) => usages[source]?.[source]?.rolling_30d?.total_tokens).join(" + ") || "codex 기본 데이터";
 
-  return `<svg width="960" height="450" viewBox="0 0 960 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Local AI agent telemetry">
+  return `<svg width="960" height="450" viewBox="0 0 960 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="로컬 AI 에이전트 사용량">
     <defs>
       <linearGradient id="bg" x1="0" y1="0" x2="960" y2="450" gradientUnits="userSpaceOnUse">
         <stop stop-color="#020617"/>
@@ -159,18 +159,18 @@ function renderSvg(usages) {
     <rect width="960" height="450" rx="24" fill="url(#bg)"/>
     <path d="M54 102C162 35 258 129 354 80C459 27 535 112 626 81C728 46 804 74 904 38" stroke="#38bdf8" stroke-width="2" opacity="0.42"/>
     <path d="M58 414C176 340 287 407 391 349C522 276 623 387 737 315C805 272 848 281 906 253" stroke="#a7f3d0" stroke-width="2" opacity="0.38"/>
-    <text x="44" y="58" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="850">Local AI Agent Telemetry</text>
-    <text x="44" y="86" fill="#cbd5e1" font-family="Inter, Arial, sans-serif" font-size="15">Codex + Claude Code aggregates · updated ${escapeXml(newestGeneratedAt(usages))}</text>
+    <text x="44" y="58" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="850">로컬 AI 에이전트 사용량</text>
+    <text x="44" y="86" fill="#cbd5e1" font-family="Inter, Arial, sans-serif" font-size="15">Codex + Claude Code 집계 · 갱신 ${escapeXml(newestGeneratedAt(usages))}</text>
 
-    ${metricBlock(44, 124, "Codex 30d tokens", compact(codex30.total_tokens), `${codex30.sessions || 0} sessions · ${compact(codex30.output_tokens)} output`, "#38bdf8")}
-    ${metricBlock(354, 124, "Claude 30d tokens", compact(claude30.total_tokens), `${claude30.sessions || 0} sessions · ${compact(claude30.output_tokens)} output`, "#a78bfa")}
-    ${metricBlock(664, 124, "Combined 30d", compact(combined30.total_tokens), `${combined30.sessions || 0} sessions · local logs`, "#fde68a")}
+    ${metricBlock(44, 124, "Codex 최근 30일 토큰", compact(codex30.total_tokens), `${codex30.sessions || 0}개 세션 · 출력 ${compact(codex30.output_tokens)}`, "#38bdf8")}
+    ${metricBlock(354, 124, "Claude 최근 30일 토큰", compact(claude30.total_tokens), `${claude30.sessions || 0}개 세션 · 출력 ${compact(claude30.output_tokens)}`, "#a78bfa")}
+    ${metricBlock(664, 124, "최근 30일 합산", compact(combined30.total_tokens), `${combined30.sessions || 0}개 세션 · 로컬 로그`, "#fde68a")}
 
-    <text x="44" y="280" fill="#e2e8f0" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700">Daily activity</text>
-    <text x="44" y="304" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="13">Month ${compact(combinedMonth.total_tokens)} · all-time ${compact(combinedAll.total_tokens)} · last 84 days</text>
+    <text x="44" y="280" fill="#e2e8f0" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700">일별 활동</text>
+    <text x="44" y="304" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="13">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)} · 최근 84일</text>
     ${contributionGrid(days)}
 
-    <text x="44" y="430" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12">Sources: ${escapeXml(available)}. No prompts, file contents, or secrets are published.</text>
+    <text x="44" y="430" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12">출처: ${escapeXml(available)}. 프롬프트, 파일 내용, 비밀값은 게시하지 않습니다.</text>
   </svg>`;
 }
 

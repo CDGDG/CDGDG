@@ -1,51 +1,51 @@
 <p align="center">
   <a href="https://cdgdg.github.io">
-    <img src="./assets/agent-header.svg" alt="CDGDG - AI Agent Product Engineer" width="100%" />
+    <img src="./assets/agent-header.svg" alt="CDGDG - AI 에이전트 제품 엔지니어" width="100%" />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://cdgdg.github.io"><img src="https://img.shields.io/badge/Portfolio-cdgdg.github.io-111827?style=for-the-badge" alt="Portfolio" /></a>
-  <a href="https://cdgdg.github.io/#/brain"><img src="https://img.shields.io/badge/Brain-Knowledge%20Graph-2563EB?style=for-the-badge" alt="Brain" /></a>
-  <img src="https://img.shields.io/badge/Mode-Agentic%20Product%20Engineering-16A34A?style=for-the-badge" alt="Agentic Product Engineering" />
+  <a href="https://cdgdg.github.io"><img src="https://img.shields.io/badge/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4-cdgdg.github.io-111827?style=for-the-badge" alt="포트폴리오" /></a>
+  <a href="https://cdgdg.github.io/#/brain"><img src="https://img.shields.io/badge/%EB%B8%8C%EB%A0%88%EC%9D%B8-%EC%A7%80%EC%8B%9D%20%EA%B7%B8%EB%9E%98%ED%94%84-2563EB?style=for-the-badge" alt="브레인" /></a>
+  <img src="https://img.shields.io/badge/%EB%AA%A8%EB%93%9C-AI%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%EC%A0%9C%ED%92%88%20%EA%B0%9C%EB%B0%9C-16A34A?style=for-the-badge" alt="AI 에이전트 제품 개발" />
 </p>
 
-## Jo Donggeon / CDGDG
+## 조동건 / CDGDG
 
-I build product systems with AI agents in the loop.
+AI 에이전트를 제품 개발 루프에 붙여 일합니다.
 
-Flutter is still one of my tools, but it is no longer the whole story. My current work is closer to **agentic product engineering**: connecting app screens, APIs, data contracts, automation scripts, browser verification, deployment, and an Obsidian-backed knowledge graph into one working feedback loop.
+Flutter는 여전히 잘 쓰는 도구지만, 이제는 그게 전부라고 생각하지 않습니다. 지금의 관심사는 앱 화면, API, 데이터 계약, 자동화 스크립트, 브라우저 검증, 배포, Obsidian 기반 작업 기억을 하나의 피드백 루프로 연결하는 **AI 에이전트 제품 개발**에 더 가깝습니다.
 
-### Current Signal
+### 현재 방향
 
-| Area | What I Actually Build |
+| 영역 | 실제로 만드는 것 |
 | --- | --- |
-| AI agent workflow | Codex / Claude Code harnesses, task memory, Obsidian brain, verification loops |
-| Product engineering | Mobile apps, web surfaces, admin tools, API flows, release operations |
-| Automation | Content pipelines, browser QA, app-store release support, scheduled jobs |
-| Public proof | [Portfolio](https://cdgdg.github.io), [Brain graph](https://cdgdg.github.io/#/brain), shipped app projects |
+| AI 에이전트 워크플로우 | Codex / Claude Code 하네스, 작업 기억, Obsidian 브레인, 검증 루프 |
+| 제품 개발 | 모바일 앱, 웹 화면, 관리자 도구, API 흐름, 릴리스 운영 |
+| 자동화 | 콘텐츠 파이프라인, 브라우저 QA, 앱스토어 릴리스 보조, 예약 작업 |
+| 공개된 결과물 | [포트폴리오](https://cdgdg.github.io), [브레인 그래프](https://cdgdg.github.io/#/brain), 실제 배포된 앱 프로젝트 |
 
-### AI Ops Telemetry
+### AI 사용량 텔레메트리
 
 <p>
-  <img src="https://cdgdg-ai-usage.vercel.app/api/ai-usage.svg" alt="AI usage telemetry" width="100%" />
+  <img src="https://cdgdg-ai-usage.vercel.app/api/ai-usage.svg" alt="AI 사용량 텔레메트리" width="100%" />
 </p>
 
-<sub>Live card served by `api/ai-usage.svg.js`. Local collectors upload aggregate telemetry to `api/agent-usage`; the README card reads the latest values from Vercel Blob. No prompts, file contents, or secrets are published.</sub>
+<sub>`api/ai-usage.svg.js`가 그리는 라이브 카드입니다. 각 PC의 로컬 collector가 집계값만 `api/agent-usage`로 업로드하고, README 카드는 Vercel Blob의 최신 값을 읽습니다. 프롬프트, 응답, 파일 내용, 비밀값은 게시하지 않습니다.</sub>
 
-### Operating Loop
+### 작업 루프
 
 ```mermaid
 flowchart LR
-  Me["Me\nproduct intent"] --> Brief["Brief\nconstraints + context"]
-  Brief --> Agent["AI agents\ncode + search + browser"]
-  Agent --> Verify["Verification\nanalyze + tests + screenshots"]
-  Verify --> Ship["Ship\nGitHub Pages / stores / jobs"]
-  Ship --> Brain["Obsidian brain\nmemory + related links"]
+  Me["나\n제품 의도"] --> Brief["작업 브리프\n제약 + 맥락"]
+  Brief --> Agent["AI 에이전트\n코드 + 검색 + 브라우저"]
+  Agent --> Verify["검증\n분석 + 테스트 + 스크린샷"]
+  Verify --> Ship["배포\nGitHub Pages / 스토어 / 예약 작업"]
+  Ship --> Brain["Obsidian 브레인\n기억 + related 링크"]
   Brain --> Brief
 ```
 
-### Working Stack
+### 사용 스택
 
 <p>
   <img src="https://img.shields.io/badge/Codex-111827?style=flat-square" alt="Codex" />
@@ -62,19 +62,19 @@ flowchart LR
   <img src="https://img.shields.io/badge/Fastlane-00F200?style=flat-square&logo=fastlane&logoColor=111827" alt="Fastlane" />
 </p>
 
-### Featured Work
+### 대표 작업
 
-| Project | Focus |
+| 프로젝트 | 초점 |
 | --- | --- |
-| [CDGDG Portfolio](https://cdgdg.github.io) | Flutter web portfolio, project detail pages, GitHub Pages deployment, public positioning |
-| [Brain](https://cdgdg.github.io/#/brain) | Split graph between my knowledge and AI work logs, with related-node matching |
-| FinalSay | Debate/content automation, seed generation, upload workflows, operational recovery |
-| Mobile app projects | Flutter apps, API integration, Firebase, GraphQL, store release and maintenance |
+| [CDGDG 포트폴리오](https://cdgdg.github.io) | Flutter web 포트폴리오, 프로젝트 상세 화면, GitHub Pages 배포, 공개 포지셔닝 |
+| [브레인](https://cdgdg.github.io/#/brain) | 내 지식과 AI 작업 로그를 분리한 그래프, related 노드 매칭 |
+| FinalSay | 토론/콘텐츠 자동화, seed 생성, 업로드 워크플로우, 운영 복구 |
+| 모바일 앱 프로젝트 | Flutter 앱, API 연동, Firebase, GraphQL, 스토어 릴리스와 유지보수 |
 
-### Code Sample
+### 코드 샘플
 
-[Flutter / Bloc / Riverpod sample](https://github.com/CDGDG/cdgdg_flutter_code)
+[Flutter / Bloc / Riverpod 샘플](https://github.com/CDGDG/cdgdg_flutter_code)
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=CDGDG&show_icons=true&hide_border=true&theme=transparent&rank_icon=github" alt="GitHub stats" />
+  <img src="https://github-readme-stats.vercel.app/api?username=CDGDG&show_icons=true&hide_border=true&theme=transparent&rank_icon=github" alt="GitHub 통계" />
 </p>
