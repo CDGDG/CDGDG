@@ -1,0 +1,24 @@
+{
+  "name": "cdgdg",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">   <a href=\"https://cdgdg.github.io\">     <img src=\"./assets/agent-header.svg\" alt=\"CDGDG - AI Agent Product Engineer\" width=\"100%\" />   </a> </p>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CDGDG/CDGDG.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CDGDG/CDGDG/issues"
+  },
+  "homepage": "https://github.com/CDGDG/CDGDG#readme",
+  "dependencies": {
+    "@vercel/blob": "^2.4.1"
+  }
+}

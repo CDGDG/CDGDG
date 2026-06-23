@@ -31,7 +31,7 @@ Flutter is still one of my tools, but it is no longer the whole story. My curren
   <img src="https://cdgdg-ai-usage.vercel.app/api/ai-usage.svg" alt="AI usage telemetry" width="100%" />
 </p>
 
-<sub>Live card served by `api/ai-usage.svg.js`. A Codex automation refreshes aggregate Codex telemetry every day at 03:00 KST and redeploys the Vercel endpoint. No prompts, file contents, or secrets are published.</sub>
+<sub>Live card served by `api/ai-usage.svg.js`. Local collectors upload aggregate telemetry to `api/agent-usage`; the README card reads the latest values from Vercel Blob. No prompts, file contents, or secrets are published.</sub>
 
 ### Operating Loop
 

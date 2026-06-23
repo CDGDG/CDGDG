@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
+const SOURCES = ["codex", "claude"];
+
 function compact(value, digits = 1) {
   const number = Number(value || 0);
   if (number >= 1_000_000_000) return `${(number / 1_000_000_000).toFixed(digits)}B`;
@@ -17,22 +19,98 @@ function escapeXml(value) {
     .replace(/"/g, "&quot;");
 }
 
-function loadUsage() {
+function emptyUsage(source) {
+  return {
+    generated_at: null,
+    sources: [],
+    [source]: {
+      month: {},
+      rolling_30d: {},
+      all_time: {},
+      daily: [],
+    },
+  };
+}
+
+async function streamToText(stream) {
+  return new Response(stream).text();
+}
+
+async function loadBlobUsage(source) {
+  try {
+    const { get } = await import("@vercel/blob");
+    const result = await get(`agent-usage/${source}.json`, { access: "private", useCache: false });
+    if (!result || result.statusCode !== 200) return null;
+    return JSON.parse(await streamToText(result.stream));
+  } catch {
+    return null;
+  }
+}
+
+function loadBundledUsage(source) {
   const usagePath = path.join(process.cwd(), "data", "agent-usage.json");
   try {
-    return JSON.parse(fs.readFileSync(usagePath, "utf8"));
+    const data = JSON.parse(fs.readFileSync(usagePath, "utf8"));
+    return data[source] ? data : null;
   } catch {
-    return {
-      generated_at: null,
-      sources: [],
-      codex: {
-        month: {},
-        rolling_30d: {},
-        all_time: {},
-        daily: [],
-      },
-    };
+    return null;
   }
+}
+
+async function loadUsages() {
+  const entries = {};
+  for (const source of SOURCES) {
+    entries[source] = await loadBlobUsage(source);
+  }
+  if (!entries.codex) {
+    entries.codex = loadBundledUsage("codex") || emptyUsage("codex");
+  }
+  if (!entries.claude) {
+    entries.claude = emptyUsage("claude");
+  }
+  return entries;
+}
+
+function metric(data, source, window) {
+  return data?.[source]?.[window] || {};
+}
+
+function sumMetrics(...metrics) {
+  const total = {};
+  for (const item of metrics) {
+    for (const [key, value] of Object.entries(item || {})) {
+      if (typeof value === "number") total[key] = (total[key] || 0) + value;
+    }
+  }
+  return total;
+}
+
+function mergedDaily(usages) {
+  const byDate = new Map();
+  for (const source of SOURCES) {
+    for (const day of usages[source]?.[source]?.daily || []) {
+      const date = day.date;
+      if (!date) continue;
+      const current = byDate.get(date) || { date };
+      for (const [key, value] of Object.entries(day)) {
+        if (key !== "date" && typeof value === "number") {
+          current[key] = (current[key] || 0) + value;
+        }
+      }
+      byDate.set(date, current);
+    }
+  }
+  return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-84);
+}
+
+function newestGeneratedAt(usages) {
+  const values = SOURCES
+    .map((source) => usages[source]?.generated_at)
+    .filter(Boolean)
+    .map((value) => new Date(value).getTime())
+    .filter((value) => Number.isFinite(value));
+  if (!values.length) return "not generated";
+  return new Date(Math.max(...values)).toISOString().slice(0, 16).replace("T", " UTC ");
 }
 
 function metricBlock(x, y, label, value, sublabel, accent) {
@@ -61,15 +139,14 @@ function contributionGrid(days) {
   return cells.join("");
 }
 
-function renderSvg(data) {
-  const codex = data.codex || {};
-  const rolling = codex.rolling_30d || {};
-  const month = codex.month || {};
-  const allTime = codex.all_time || {};
-  const generated = data.generated_at
-    ? new Date(data.generated_at).toISOString().slice(0, 16).replace("T", " UTC ")
-    : "not generated";
-  const sourceText = (data.sources || []).join(" + ") || "local collector pending";
+function renderSvg(usages) {
+  const codex30 = metric(usages.codex, "codex", "rolling_30d");
+  const claude30 = metric(usages.claude, "claude", "rolling_30d");
+  const combined30 = sumMetrics(codex30, claude30);
+  const combinedMonth = sumMetrics(metric(usages.codex, "codex", "month"), metric(usages.claude, "claude", "month"));
+  const combinedAll = sumMetrics(metric(usages.codex, "codex", "all_time"), metric(usages.claude, "claude", "all_time"));
+  const days = mergedDaily(usages);
+  const available = SOURCES.filter((source) => usages[source]?.[source]?.rolling_30d?.total_tokens).join(" + ") || "codex bundled fallback";
 
   return `<svg width="960" height="450" viewBox="0 0 960 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Local AI agent telemetry">
     <defs>
@@ -83,22 +160,22 @@ function renderSvg(data) {
     <path d="M54 102C162 35 258 129 354 80C459 27 535 112 626 81C728 46 804 74 904 38" stroke="#38bdf8" stroke-width="2" opacity="0.42"/>
     <path d="M58 414C176 340 287 407 391 349C522 276 623 387 737 315C805 272 848 281 906 253" stroke="#a7f3d0" stroke-width="2" opacity="0.38"/>
     <text x="44" y="58" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="850">Local AI Agent Telemetry</text>
-    <text x="44" y="86" fill="#cbd5e1" font-family="Inter, Arial, sans-serif" font-size="15">Codex desktop/app logs · updated ${escapeXml(generated)}</text>
+    <text x="44" y="86" fill="#cbd5e1" font-family="Inter, Arial, sans-serif" font-size="15">Codex + Claude Code aggregates · updated ${escapeXml(newestGeneratedAt(usages))}</text>
 
-    ${metricBlock(44, 124, "Last 30 days tokens", compact(rolling.total_tokens), `${rolling.sessions || 0} sessions · ${compact(rolling.output_tokens)} output`, "#38bdf8")}
-    ${metricBlock(354, 124, "This month tokens", compact(month.total_tokens), `${month.sessions || 0} sessions · ${compact(month.reasoning_output_tokens)} reasoning`, "#a7f3d0")}
-    ${metricBlock(664, 124, "All-time logged", compact(allTime.total_tokens), `${allTime.sessions || 0} sessions · local logs`, "#fde68a")}
+    ${metricBlock(44, 124, "Codex 30d tokens", compact(codex30.total_tokens), `${codex30.sessions || 0} sessions · ${compact(codex30.output_tokens)} output`, "#38bdf8")}
+    ${metricBlock(354, 124, "Claude 30d tokens", compact(claude30.total_tokens), `${claude30.sessions || 0} sessions · ${compact(claude30.output_tokens)} output`, "#a78bfa")}
+    ${metricBlock(664, 124, "Combined 30d", compact(combined30.total_tokens), `${combined30.sessions || 0} sessions · local logs`, "#fde68a")}
 
     <text x="44" y="280" fill="#e2e8f0" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700">Daily activity</text>
-    <text x="44" y="304" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="13">Last 84 days · darker means fewer tokens, brighter means heavier agent work</text>
-    ${contributionGrid(codex.daily || [])}
+    <text x="44" y="304" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="13">Month ${compact(combinedMonth.total_tokens)} · all-time ${compact(combinedAll.total_tokens)} · last 84 days</text>
+    ${contributionGrid(days)}
 
-    <text x="44" y="430" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12">Source: ${escapeXml(sourceText)}. No prompts, file contents, or secrets are published.</text>
+    <text x="44" y="430" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="12">Sources: ${escapeXml(available)}. No prompts, file contents, or secrets are published.</text>
   </svg>`;
 }
 
 module.exports = async function handler(req, res) {
   res.setHeader("Content-Type", "image/svg+xml; charset=utf-8");
   res.setHeader("Cache-Control", "s-maxage=900, stale-while-revalidate=3600");
-  res.status(200).send(renderSvg(loadUsage()));
+  res.status(200).send(renderSvg(await loadUsages()));
 };
