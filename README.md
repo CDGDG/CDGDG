@@ -21,6 +21,12 @@
       alt="JUST MAKE"
     />
   </a>
+  <a href="https://cdgdg.github.io/#brain">
+    <img
+      src="https://img.shields.io/badge/BRAIN-Knowledge%20Graph-1F2937?style=for-the-badge"
+      alt="BRAIN"
+    />
+  </a>
 </p>
 
 ## 조동건 / CDGDG
