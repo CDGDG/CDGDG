@@ -46,7 +46,7 @@ function sanitizePayload(source, payload) {
       month: numericTotals(root.month),
       rolling_30d: numericTotals(root.rolling_30d),
       all_time: numericTotals(root.all_time),
-      daily: daily.slice(-120).map((day) => ({
+      daily: daily.slice(-400).map((day) => ({
         date: String(day.date || ""),
         ...numericTotals(day),
       })).filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day.date)),

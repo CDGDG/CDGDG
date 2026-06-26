@@ -95,7 +95,7 @@ def total_for_window(sessions: list[tuple[dt.datetime, dict[str, int]]], start: 
     return total
 
 
-def daily_totals(sessions: list[tuple[dt.datetime, dict[str, int]]], days: int = 84) -> list[dict[str, int | str]]:
+def daily_totals(sessions: list[tuple[dt.datetime, dict[str, int]]], days: int = 371) -> list[dict[str, int | str]]:
     now = dt.datetime.now(KST)
     first_day = now.date() - dt.timedelta(days=days - 1)
     by_day: dict[dt.date, Totals] = {first_day + dt.timedelta(days=offset): Totals() for offset in range(days)}

@@ -108,7 +108,7 @@ function mergedDaily(usages) {
       byDate.set(date, current);
     }
   }
-  return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-84);
+  return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-400);
 }
 
 function newestGeneratedAt(usages) {
@@ -159,43 +159,51 @@ function compactMetric(x, y, width, label, value, sublabel, accent) {
 }
 
 function contributionGrid(days) {
-  // GitHub-style calendar heatmap: 7 rows (Sun→Sat) × one column per week.
-  const normalized = [...(days || [])].filter((day) => day && day.date).slice(-84);
-  if (!normalized.length) return "";
+  // GitHub-style full-year calendar: 7 rows (Sun→Sat) × 53 week columns,
+  // ending on the latest day. Days without data render as empty cells.
+  const data = [...(days || [])].filter((day) => day && day.date);
+  if (!data.length) return "";
 
   const colors = ["#e2e8f0", "#bae6fd", "#7dd3fc", "#38bdf8", "#0f766e"];
   const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const DAY_MS = 86400000;
   const parse = (value) => new Date(`${value}T00:00:00Z`);
-  const maxTokens = Math.max(1, ...normalized.map((day) => Number(day.total_tokens || 0)));
+  const fmt = (date) => date.toISOString().slice(0, 10);
 
-  const first = parse(normalized[0].date);
-  // Anchor the grid to the Sunday on/before the first day so columns are weeks.
-  const gridStart = new Date(first.getTime() - first.getUTCDay() * DAY_MS);
+  const byDate = new Map(data.map((day) => [day.date, Number(day.total_tokens || 0)]));
+  const maxTokens = Math.max(1, ...data.map((day) => Number(day.total_tokens || 0)));
 
-  const cell = 12;
-  const step = cell + 4; // 16
-  const originX = 96; // cells begin here; weekday labels sit to the left
-  const originY = 482; // top (Sunday) row
+  const weeks = 53;
+  const end = parse(data[data.length - 1].date);
+  // Sunday of the latest day's week, then 52 weeks back for the first column.
+  const lastSunday = new Date(end.getTime() - end.getUTCDay() * DAY_MS);
+  const gridStart = new Date(lastSunday.getTime() - (weeks - 1) * 7 * DAY_MS);
+
+  const cell = 11;
+  const step = cell + 3; // 14
+  const originX = 92; // cells begin here; weekday labels sit to the left
+  const originY = 486; // top (Sunday) row; month labels sit above
 
   const cells = [];
   const monthLabels = [];
-  const seenMonth = new Set();
+  let prevMonth = -1;
 
-  for (const day of normalized) {
-    const date = parse(day.date);
-    const col = Math.floor((date.getTime() - gridStart.getTime()) / (7 * DAY_MS));
-    const row = date.getUTCDay();
-    const value = Number(day.total_tokens || 0);
-    const level = value <= 0 ? 0 : Math.min(4, Math.ceil((value / maxTokens) * 4));
-    const x = originX + col * step;
-    const y = originY + row * step;
-    cells.push(`<rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="2.5" fill="${colors[level]}"><title>${escapeXml(day.date)}: ${compact(value)} tokens</title></rect>`);
-
-    const month = date.getUTCMonth();
-    if (!seenMonth.has(month)) {
-      seenMonth.add(month);
-      monthLabels.push(`<text x="${x}" y="${originY - 8}" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700">${MONTHS[month]}</text>`);
+  for (let col = 0; col < weeks; col += 1) {
+    for (let row = 0; row < 7; row += 1) {
+      const date = new Date(gridStart.getTime() + (col * 7 + row) * DAY_MS);
+      if (date.getTime() > end.getTime()) continue; // no future cells
+      const key = fmt(date);
+      const value = byDate.get(key) || 0;
+      const level = value <= 0 ? 0 : Math.min(4, Math.ceil((value / maxTokens) * 4));
+      const x = originX + col * step;
+      const y = originY + row * step;
+      cells.push(`<rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="2" fill="${colors[level]}"><title>${escapeXml(key)}: ${compact(value)} tokens</title></rect>`);
+    }
+    // Month label when the column's first day starts a new month.
+    const colMonth = new Date(gridStart.getTime() + col * 7 * DAY_MS).getUTCMonth();
+    if (colMonth !== prevMonth) {
+      prevMonth = colMonth;
+      monthLabels.push(`<text x="${originX + col * step}" y="${originY - 8}" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700">${MONTHS[colMonth]}</text>`);
     }
   }
 
@@ -203,16 +211,7 @@ function contributionGrid(days) {
     .map(([row, label]) => `<text x="${originX - 10}" y="${(originY + row * step + cell * 0.5 + 3).toFixed(1)}" text-anchor="end" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="650">${label}</text>`)
     .join("");
 
-  // Legend (Less → More) just below the grid.
-  const legendY = originY + 7 * step + 10;
-  let legend = `<text x="${originX}" y="${legendY}" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="650">Less</text>`;
-  const swatchX = originX + 32;
-  colors.forEach((color, i) => {
-    legend += `<rect x="${swatchX + i * (cell + 3)}" y="${legendY - cell + 2}" width="${cell}" height="${cell}" rx="2.5" fill="${color}"/>`;
-  });
-  legend += `<text x="${swatchX + colors.length * (cell + 3) + 6}" y="${legendY}" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="650">More</text>`;
-
-  return monthLabels.join("") + weekdayLabels + cells.join("") + legend;
+  return monthLabels.join("") + weekdayLabels + cells.join("");
 }
 
 async function tokenChart(days) {
@@ -316,8 +315,8 @@ async function renderSvg(usages) {
     ${compactMetric(350, 345, 260, "Claude", compact(claude30.total_tokens), `${claude30.sessions || 0}개 세션`, "#7c3aed")}
     ${compactMetric(640, 345, 260, "최근 30일", compact(combined30.total_tokens), `${combined30.sessions || 0}개 세션`, "#0f766e")}
 
-    <text x="60" y="452" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="850">최근 84일</text>
-    <text x="170" y="452" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)}</text>
+    <text x="60" y="452" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="850">최근 1년</text>
+    <text x="160" y="452" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)}</text>
     ${contributionGrid(days)}
   </svg>`;
 }
