@@ -159,19 +159,60 @@ function compactMetric(x, y, width, label, value, sublabel, accent) {
 }
 
 function contributionGrid(days) {
-  const cells = [];
-  const normalized = [...(days || [])].slice(-84);
+  // GitHub-style calendar heatmap: 7 rows (Sun→Sat) × one column per week.
+  const normalized = [...(days || [])].filter((day) => day && day.date).slice(-84);
+  if (!normalized.length) return "";
+
+  const colors = ["#e2e8f0", "#bae6fd", "#7dd3fc", "#38bdf8", "#0f766e"];
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const DAY_MS = 86400000;
+  const parse = (value) => new Date(`${value}T00:00:00Z`);
   const maxTokens = Math.max(1, ...normalized.map((day) => Number(day.total_tokens || 0)));
-  for (let i = 0; i < 84; i += 1) {
-    const day = normalized[i] || {};
+
+  const first = parse(normalized[0].date);
+  // Anchor the grid to the Sunday on/before the first day so columns are weeks.
+  const gridStart = new Date(first.getTime() - first.getUTCDay() * DAY_MS);
+
+  const cell = 12;
+  const step = cell + 4; // 16
+  const originX = 96; // cells begin here; weekday labels sit to the left
+  const originY = 482; // top (Sunday) row
+
+  const cells = [];
+  const monthLabels = [];
+  const seenMonth = new Set();
+
+  for (const day of normalized) {
+    const date = parse(day.date);
+    const col = Math.floor((date.getTime() - gridStart.getTime()) / (7 * DAY_MS));
+    const row = date.getUTCDay();
     const value = Number(day.total_tokens || 0);
     const level = value <= 0 ? 0 : Math.min(4, Math.ceil((value / maxTokens) * 4));
-    const colors = ["#e2e8f0", "#bae6fd", "#7dd3fc", "#38bdf8", "#0f766e"];
-    const x = 60 + (i % 28) * 30;
-    const y = 500 + Math.floor(i / 28) * 25;
-    cells.push(`<rect x="${x}" y="${y}" width="18" height="18" rx="5" fill="${colors[level]}"><title>${escapeXml(day.date || "")}: ${compact(value)} tokens</title></rect>`);
+    const x = originX + col * step;
+    const y = originY + row * step;
+    cells.push(`<rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="2.5" fill="${colors[level]}"><title>${escapeXml(day.date)}: ${compact(value)} tokens</title></rect>`);
+
+    const month = date.getUTCMonth();
+    if (!seenMonth.has(month)) {
+      seenMonth.add(month);
+      monthLabels.push(`<text x="${x}" y="${originY - 8}" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700">${MONTHS[month]}</text>`);
+    }
   }
-  return cells.join("");
+
+  const weekdayLabels = [[1, "Mon"], [3, "Wed"], [5, "Fri"]]
+    .map(([row, label]) => `<text x="${originX - 10}" y="${(originY + row * step + cell * 0.5 + 3).toFixed(1)}" text-anchor="end" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="650">${label}</text>`)
+    .join("");
+
+  // Legend (Less → More) just below the grid.
+  const legendY = originY + 7 * step + 10;
+  let legend = `<text x="${originX}" y="${legendY}" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="650">Less</text>`;
+  const swatchX = originX + 32;
+  colors.forEach((color, i) => {
+    legend += `<rect x="${swatchX + i * (cell + 3)}" y="${legendY - cell + 2}" width="${cell}" height="${cell}" rx="2.5" fill="${color}"/>`;
+  });
+  legend += `<text x="${swatchX + colors.length * (cell + 3) + 6}" y="${legendY}" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="650">More</text>`;
+
+  return monthLabels.join("") + weekdayLabels + cells.join("") + legend;
 }
 
 async function tokenChart(days) {
@@ -275,8 +316,8 @@ async function renderSvg(usages) {
     ${compactMetric(350, 345, 260, "Claude", compact(claude30.total_tokens), `${claude30.sessions || 0}개 세션`, "#7c3aed")}
     ${compactMetric(640, 345, 260, "최근 30일", compact(combined30.total_tokens), `${combined30.sessions || 0}개 세션`, "#0f766e")}
 
-    <text x="60" y="480" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="850">최근 84일</text>
-    <text x="170" y="480" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)}</text>
+    <text x="60" y="452" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="850">최근 84일</text>
+    <text x="170" y="452" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700">이번 달 ${compact(combinedMonth.total_tokens)} · 전체 ${compact(combinedAll.total_tokens)}</text>
     ${contributionGrid(days)}
   </svg>`;
 }
